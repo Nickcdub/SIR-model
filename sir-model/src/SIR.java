@@ -5,18 +5,16 @@ public class SIR {
     private final int population;
     private final int vaccinated;
     private final double rConstant;
-    private final double iConstant;
+    private final double transRate;
     private final double infected;
 
     protected SIR(int population, double transRate, double recovery, int vaccinated, int infected) {
         this.population = population;
         this.vaccinated = vaccinated;
         this.infected = infected;
-
+        this.transRate = transRate;
         this.rConstant =  1/recovery;
-        this.iConstant = (transRate * rConstant) / (population-infected-(vaccinated*0.95));
-
-
+     
     }
 
     public String getInfo(int days){
@@ -30,6 +28,8 @@ public class SIR {
         S[0] = (population - R[0] - I[0]);
 
         for (int i = 1; i <= days; i++) {
+            double iConstant;
+            iConstant = (transRate * rConstant) / S[i-1];
             S[i] = S[i - 1] - (iConstant * I[i - 1] * S[i - 1]);
             I[i] = I[i-1] + (iConstant*I[i-1]*S[i-1]) - (rConstant*I[i-1]);
             R[i] = R[i-1] + (rConstant*I[i-1]);
